@@ -1,6 +1,8 @@
 #include <cstdio>
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -27,6 +29,18 @@ void runFile(char *filepath) {
 }
 
 void runPrompt() {
+  while (true) {
+    cout << "> ";
+    string line;
+    getline(cin, line);
+
+    if (line.empty()) {
+      break;
+    }
+
+    auto lstream = stringstream(line);
+    run(lstream);
+  }
 }
 
 void run(istream &src) {
