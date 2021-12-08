@@ -34,11 +34,11 @@ class Token {
     const literal_t literal;
     const int line;
 
-    string getLiteralString();
+    string getLiteralString() const;
 
   public:
     Token(TokenType t, string lex, literal_t lit, int lin) : type(t), lexeme(lex), literal(lit), line(lin) {}
-    string toString();
+    string toString() const;
 };
 
 #endif

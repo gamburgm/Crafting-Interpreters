@@ -50,7 +50,7 @@ string getTokenType(TokenType t) {
   return string(TOKEN_TYPE_STRS[t]);
 }
 
-string Token::getLiteralString() {
+string Token::getLiteralString() const {
   // to avoid nullptr falling into this case, a literal number only in NUMBER case
   if (holds_alternative<int>(literal) && type == TokenType::NUMBER) {
     return to_string(get<int>(literal));
@@ -61,7 +61,7 @@ string Token::getLiteralString() {
   }
 }
 
-string Token::toString() {
+string Token::toString() const {
   stringstream ss;
   ss << getTokenType(type) << " " << lexeme << " " << getLiteralString();
 
