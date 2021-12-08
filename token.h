@@ -25,7 +25,7 @@ enum TokenType {
   END_OF_FILE,
 };
 
-using literal_t = variant<int, string, nullptr_t>;
+using literal_t = variant<double, string, nullptr_t>;
 
 class Token {
   private:

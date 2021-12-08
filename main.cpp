@@ -12,8 +12,6 @@ using namespace std;
 void runFile(char *);
 void runPrompt();
 void run(istream &);
-void error(int, string);
-void report(int, string, string);
 
 int main(int argc, char *argv[]) {
   if (argc > 2) {
@@ -57,12 +55,4 @@ void run(istream &src) {
   // vector toks = scanner.getTokens();
   // for token in tokens:
   //     cout << token << endl;
-}
-
-void error(int line, string message) {
-  report(line, string(""), message);
-}
-
-void report(int line, string where, string message) {
-  cout << "[ line " << line << "] Error" << where << ": " << message << endl;
 }
