@@ -17,7 +17,7 @@ void report(int, string, string);
 
 int main(int argc, char *argv[]) {
   if (argc > 2) {
-    cout << "Usage: jlox [script]" << endl;
+    cout << "Usage: clox [script]" << endl;
   } else if (argc == 2) {
     runFile(argv[1]);
   } else {
@@ -44,8 +44,8 @@ void runPrompt() {
       break;
     }
 
-    auto lstream = stringstream(line);
-    run(lstream);
+    auto ss = stringstream(line);
+    run(ss);
     // TODO if run returned an error, ignore it. You'd reset the 'global variable' here.
   }
 }

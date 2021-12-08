@@ -1,4 +1,5 @@
 #include <string>
+#include <variant>
 
 using namespace std;
 
@@ -24,59 +25,19 @@ enum TokenType {
   END_OF_FILE,
 };
 
-static const char *TOKEN_TYPE_STRS[] = {
-  "LeftParen",
-  "RightParen",
-  "LeftBrace",
-  "RightBrace",
-  "Comma",
-  "Dot",
-  "Minus",
-  "Plus",
-  "Semicolon",
-  "Slash",
-  "Star",
-  "Bang",
-  "BangEqual",
-  "Equal",
-  "EqualEqual",
-  "Greater",
-  "GreaterEqual",
-  "Less",
-  "LessEqual",
-  "Identifier",
-  "String",
-  "Number",
-  "And",
-  "Class",
-  "Else",
-  "False",
-  "Fun",
-  "For",
-  "If",
-  "Nil",
-  "Or",
-  "Print",
-  "Return",
-  "Super",
-  "This",
-  "True",
-  "Var",
-  "While",
-  "End-of-file"
-};
-
-string getTokenType(TokenType);
+using literal_t = variant<int, string, nullptr_t>;
 
 class Token {
   private:
     const TokenType type;
     const string lexeme;
-    const any literal;
+    const literal_t literal;
     const int line;
 
+    string getLiteralString();
+
   public:
-    Token(TokenType t, string lex, any lit, int line) : type(t), lexeme(lex), literal(lit), line(line) {}
+    Token(TokenType t, string lex, literal_t lit, int lin) : type(t), lexeme(lex), literal(lit), line(lin) {}
     string toString();
 };
 
