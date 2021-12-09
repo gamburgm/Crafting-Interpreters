@@ -6,10 +6,12 @@
 
 using namespace std;
 
+using TokenVec = vector<shared_ptr<Token>>
+
 class Scanner {
   private:
     istream &src;
-    vector<shared_ptr<Token>> toks{};
+    TokenVec toks{};
     int line{1};
     bool hadError{false};
 
@@ -32,7 +34,6 @@ class Scanner {
 
   public:
     Scanner(istream &s) : src(s) {}
-    // TODO should I use a reference here or something?
-    vector<shared_ptr<Token>> scanTokens();
+    const TokenVec& scanTokens();
     bool hadScannerError();
 };

@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-// FIXME should there be a newline here?  
+
 #include "scanner.h"
 
 using namespace std;
@@ -53,12 +53,11 @@ void runPrompt() {
 }
 
 int run(istream &src) {
-  // TODO how would I handle this pointer? how should I do this? make_shared?
-  Scanner *s = new Scanner(src);
-  auto toks = s->scanTokens();
+  Scanner s(src);
+  auto toks = s.scanTokens();
 
   int res;
-  if (s->hadScannerError()) {
+  if (s.hadScannerError()) {
     res = 1;
   } else {
     res = 0;
@@ -67,6 +66,5 @@ int run(istream &src) {
     }
   }
 
-  delete s;
   return res;
 }

@@ -37,7 +37,8 @@ void Scanner::addToken(TokenType t, string lex) {
 }
 
 void Scanner::addToken(TokenType t, string lex, literal_t lit) {
-  toks.push_back(shared_ptr<Token>(new Token(t, lex, lit, line)));
+  shared_ptr<Token> tok = make_shared<Token>(t, lex, lit, line);
+  toks.push_back(tok);
 }
 
 char Scanner::advance() {
@@ -48,7 +49,6 @@ char Scanner::peek() {
   return src.peek();
 }
 
-// FIXME odds this works?
 char Scanner::peekNext() {
   src.seekg(1, src.cur);
   char c = src.peek();
@@ -173,7 +173,6 @@ void Scanner::scanToken() {
         addToken(TokenType::SLASH, s);
       }
       break;
-    // TODO should these case statements be on the same line?
     case ' ':
     case '\r':
     case '\t':
@@ -195,19 +194,18 @@ void Scanner::scanToken() {
 
 }
 
-vector<shared_ptr<Token>> Scanner::scanTokens() {
+const TokenVec &Scanner::scanTokens() {
   while (!isAtEnd()) {
     // we are at the beginning of the next lexeme
     scanToken();
   }
 
-  // TODO should I use `make_shared` or use the constructor as I am now?
-  toks.push_back(shared_ptr<Token>(new Token(TokenType::END_OF_FILE, "", nullptr, line)));
+  shared_ptr<Token> tok = make_shared<Token>(TokenType::END_OF_FILE, "", nullptr, line);
+  toks.push_back(tok);
+
   return toks;
 }
 
 bool Scanner::hadScannerError() {
   return hadError;
 }
-
-
