@@ -6,7 +6,7 @@
 
 using namespace std;
 
-using TokenVec = vector<shared_ptr<Token>>
+using TokenVec = vector<shared_ptr<Token>>;
 
 class Scanner {
   private:
