@@ -52,8 +52,8 @@ string getTokenType(TokenType t) {
 
 string Token::getLiteralString() const {
   // to avoid nullptr falling into this case, a literal number only in NUMBER case
-  if (holds_alternative<int>(literal) && type == TokenType::NUMBER) {
-    return to_string(get<int>(literal));
+  if (holds_alternative<double>(literal) && type == TokenType::NUMBER) {
+    return to_string(get<double>(literal));
   } else if (holds_alternative<string>(literal)) {
     return get<string>(literal);
   } else {

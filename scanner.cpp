@@ -1,7 +1,27 @@
+#include <sstream>
 #include "scanner.h"
 #include "util.h"
 
 using namespace std;
+
+const map<string, TokenType> Scanner::keywords = {
+  {string("and"),    TokenType::AND},
+  {string("class"),  TokenType::CLASS},
+  {string("else"),   TokenType::ELSE},
+  {string("false"),  TokenType::FALSE_BOOL},
+  {string("for"),    TokenType::FOR},
+  {string("fun"),    TokenType::FUN},
+  {string("if"),     TokenType::IF},
+  {string("nil"),    TokenType::NIL},
+  {string("or"),     TokenType::OR},
+  {string("print"),  TokenType::PRINT},
+  {string("return"), TokenType::RETURN},
+  {string("super"),  TokenType::SUPER},
+  {string("this"),   TokenType::THIS},
+  {string("true"),   TokenType::TRUE_BOOL},
+  {string("var"),    TokenType::VAR},
+  {string("while"),  TokenType::WHILE},
+};
 
 bool Scanner::isAtEnd() const {
   return src.peek() != EOF;
@@ -17,7 +37,7 @@ void Scanner::addToken(TokenType t, string lex) {
 }
 
 void Scanner::addToken(TokenType t, string lex, literal_t lit) {
-  toks.add(shared_ptr<Token>(new Token(t, lex, lit, line)));
+  toks.push_back(shared_ptr<Token>(new Token(t, lex, lit, line)));
 }
 
 char Scanner::advance() {
@@ -37,7 +57,8 @@ char Scanner::peekNext() {
 }
 
 void Scanner::lex_string() {
-  stringstream ss('"', ios::in | ios::out); // FIXME this is wrong for multiple reasons
+  stringstream ss;
+  ss << '"';
 
   while (peek() != '"' && !isAtEnd()) {
     if (peek() == '\n') line++;
@@ -56,16 +77,18 @@ void Scanner::lex_string() {
 }
 
 void Scanner::lex_number(char first_digit) {
-  stringstream ss(first_digit, ios::in | ios::out); // FIXME this is wrong for multiple reasons
-  while isdigit(peek()) {
+  stringstream ss;
+  ss << first_digit;
+
+  while (isDigit(peek())) {
     ss << advance();
   }
 
-  if (peek() == '.' && isdigit(peekNext(src))) {
+  if (peek() == '.' && isdigit(peekNext())) {
     ss << advance();
   }
 
-  while (isdigit(peek())) {
+  while (isDigit(peek())) {
     ss << advance();
   }
 
@@ -74,8 +97,10 @@ void Scanner::lex_number(char first_digit) {
 }
 
 void Scanner::lex_identifier(char first_c) {
-  stringstream ss(first_c, ios::in | ios::out); // FIXME this is wrong for multiple reasons
-  while (isalnum(peek())) {
+  stringstream ss;
+  ss << first_c;
+
+  while (isAlphaNumeric(peek())) {
     ss << advance();
   }
 
@@ -83,7 +108,7 @@ void Scanner::lex_identifier(char first_c) {
   string val(ss.str());
 
   auto type_iter = keywords.find(val);
-  if (type == keywords.end()) {
+  if (type_iter == keywords.end()) {
     type = TokenType::IDENTIFIER;
   } else {
     type = type_iter->second;
@@ -111,33 +136,33 @@ void Scanner::scanToken() {
     case '!':
       if (match('=')) {
         s.push_back('=');
-        add_token(TokenType::BANG_EQUAL, s);
+        addToken(TokenType::BANG_EQUAL, s);
       } else {
-        add_token(TokenType::BANG, s);
+        addToken(TokenType::BANG, s);
       }
       break;
     case '=':
       if (match('=')) {
         s.push_back('=');
-        add_token(TokenType::EQUAL_EQUAL, s);
+        addToken(TokenType::EQUAL_EQUAL, s);
       } else {
-        add_token(TokenType::EQUAL, s);
+        addToken(TokenType::EQUAL, s);
       }
       break;
     case '<':
       if (match('=')) {
         s.push_back('=');
-        add_token(TokenType::LESS_EQUAL, s);
+        addToken(TokenType::LESS_EQUAL, s);
       } else {
-        add_token(TokenType::LESS, s);
+        addToken(TokenType::LESS, s);
       }
       break;
     case '>':
       if (match('=')) {
         s.push_back('=');
-        add_token(TokenType::GREATER_EQUAL, s);
+        addToken(TokenType::GREATER_EQUAL, s);
       } else {
-        add_token(TokenType::GREATER, s);
+        addToken(TokenType::GREATER, s);
       }
       break;
     case '/':
@@ -155,11 +180,11 @@ void Scanner::scanToken() {
     case '\n':
       line++;
       break;
-    case '"': scan_string(); break;
+    case '"': lex_string(); break;
     default:
       if (isdigit(c)) {
         lex_number(c);
-      } else if (isalpha(c)) {
+      } else if (isAlpha(c)) {
         lex_identifier(c);
       } else {
         // FIXME need to decide how I want to signal an error has occurred

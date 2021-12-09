@@ -5,8 +5,8 @@ TARGET = clox
 
 default: $(TARGET)
 
-$(TARGET): main.o token.o scanner.o
-	$(CC) $(CFLAGS) -o $(TARGET) main.o token.o scanner.o
+$(TARGET): main.o token.o scanner.o util.o
+	$(CC) $(CFLAGS) -o $(TARGET) main.o token.o scanner.o util.o
 
 main.o: main.cpp token.h
 	$(CC) $(CFLAGS) -c main.cpp

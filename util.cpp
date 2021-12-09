@@ -1,14 +1,15 @@
+#include <iostream>
 #include "util.h"
 
 using namespace std;
 
 // TODO should I use string here anyway? I lose the satisfaction of string literals.
 
-void error(int line, char *message) {
+void error(int line, const char *message) {
   report(line, "", message);
 }
 
-void report(int line, char *where, char *message) {
+void report(int line, const char *where, const char *message) {
   cout << "[ line " << line << "] Error" << where << ": " << message << endl;
 }
 
