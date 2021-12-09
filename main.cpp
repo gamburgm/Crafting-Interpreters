@@ -3,6 +3,8 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+// FIXME should there be a newline here?  
+#include "scanner.h"
 
 using namespace std;
 
@@ -11,7 +13,7 @@ using namespace std;
 //      
 void runFile(char *);
 void runPrompt();
-void run(istream &);
+int run(istream &);
 
 int main(int argc, char *argv[]) {
   if (argc > 2) {
@@ -27,9 +29,12 @@ int main(int argc, char *argv[]) {
 
 void runFile(char *filepath) {
   ifstream f (filepath, ios::in);
-  run(f);
+  int err = run(f);
   f.close();
-  // TODO if run returned an error, exit with error code 65.
+
+  if (err != 0) {
+    exit(65);
+  }
 }
 
 void runPrompt() {
@@ -44,15 +49,24 @@ void runPrompt() {
 
     auto ss = stringstream(line);
     run(ss);
-    // TODO if run returned an error, ignore it. You'd reset the 'global variable' here.
   }
 }
 
-// TODO this function should be modified to return error (codes?), or some processable error info.
-//      the book uses a global variable (member of the main class) which I won't do for various reasons.
-void run(istream &src) {
-  // scanner = Scanner(src);
-  // vector toks = scanner.getTokens();
-  // for token in tokens:
-  //     cout << token << endl;
+int run(istream &src) {
+  // TODO how would I handle this pointer? how should I do this? make_shared?
+  Scanner *s = new Scanner(src);
+  auto toks = s->scanTokens();
+
+  int res;
+  if (s->hadScannerError()) {
+    res = 1;
+  } else {
+    res = 0;
+    for (auto const &t : toks) {
+      cout << t->toString() << endl;
+    }
+  }
+
+  delete s;
+  return res;
 }

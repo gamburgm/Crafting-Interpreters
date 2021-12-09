@@ -24,7 +24,7 @@ const map<string, TokenType> Scanner::keywords = {
 };
 
 bool Scanner::isAtEnd() const {
-  return src.peek() != EOF;
+  return src.peek() == EOF;
 }
 
 bool Scanner::match(char expected) {
@@ -66,6 +66,7 @@ void Scanner::lex_string() {
   }
 
   if (isAtEnd()) {
+    hadError = true;
     error(line, "Unterminated string.");
     return;
   }
@@ -182,12 +183,12 @@ void Scanner::scanToken() {
       break;
     case '"': lex_string(); break;
     default:
-      if (isdigit(c)) {
+      if (isDigit(c)) {
         lex_number(c);
       } else if (isAlpha(c)) {
         lex_identifier(c);
       } else {
-        // FIXME need to decide how I want to signal an error has occurred
+        hadError = true;
         error(line, "Unexpected character.");
       }
   }
@@ -200,10 +201,13 @@ vector<shared_ptr<Token>> Scanner::scanTokens() {
     scanToken();
   }
 
-  // FIXME where does `line` come from?
   // TODO should I use `make_shared` or use the constructor as I am now?
   toks.push_back(shared_ptr<Token>(new Token(TokenType::END_OF_FILE, "", nullptr, line)));
   return toks;
+}
+
+bool Scanner::hadScannerError() {
+  return hadError;
 }
 
 

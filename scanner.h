@@ -11,20 +11,22 @@ class Scanner {
     istream &src;
     vector<shared_ptr<Token>> toks{};
     int line{1};
+    bool hadError{false};
 
-    // TODO this should be re-organized
-    bool isAtEnd() const;
     void scanToken();
+
     void addToken(TokenType, string);
     void addToken(TokenType, string, literal_t);
-    bool match(char);
+
     void lex_string();
     void lex_number(char);
     void lex_identifier(char);
 
     char advance();
+    bool match(char);
     char peek();
     char peekNext();
+    bool isAtEnd() const;
 
     static const map<string, TokenType> keywords;
 
@@ -32,4 +34,5 @@ class Scanner {
     Scanner(istream &s) : src(s) {}
     // TODO should I use a reference here or something?
     vector<shared_ptr<Token>> scanTokens();
+    bool hadScannerError();
 };
