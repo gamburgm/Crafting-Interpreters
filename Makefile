@@ -8,7 +8,7 @@ default: $(TARGET)
 $(TARGET): main.o token.o scanner.o util.o
 	$(CC) $(CFLAGS) -o $(TARGET) main.o token.o scanner.o util.o
 
-main.o: main.cpp token.h
+main.o: main.cpp token.h expr.h
 	$(CC) $(CFLAGS) -c main.cpp
 
 scanner.o: scanner.cpp scanner.h token.h util.h

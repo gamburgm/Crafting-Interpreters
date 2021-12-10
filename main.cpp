@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "scanner.h"
+#include "expr.h"
 
 using namespace std;
 
