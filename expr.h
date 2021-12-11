@@ -1,9 +1,8 @@
 #include <vector>
-#include <memory>
 
 #include "token.h"
 
-template<typename R>
+template <typename R>
 class Visitor;
 
 class VisitorBase;
@@ -16,29 +15,49 @@ struct Expr {
 };
 
 struct Binary : Expr {
-  shared_ptr<Expr> left;
-  shared_ptr<Token> op;
-  shared_ptr<Expr> right;
+  Expr& left;
+  Token& op;
+  Expr& right;
+
+  Binary(Expr& _left, Token& _op, Expr& _right) : left(_left), op(_op), right(_right) {}
+
+  protected:
+    virtual void do_accept(VisitorBase& visitor);
 };
 
 struct Grouping : Expr {
-  shared_ptr<Expr> expression;
+  Expr& expression;
+
+  Grouping(Expr& _expression) : expression(_expression) {}
+
+  protected:
+    virtual void do_accept(VisitorBase& visitor);
 };
 
 struct Literal : Expr {
   literal_t value;
+
+  Literal(literal_t _value) : value(_value) {}
+
+  protected:
+    virtual void do_accept(VisitorBase& visitor);
 };
 
 struct Unary : Expr {
-  shared_ptr<Token> op;
-  shared_ptr<Expr> right;
+  Token& op;
+  Expr& right;
+
+  Unary(Token& _op, Expr& _right) : op(_op), right(_right) {}
+
+  protected:
+    virtual void do_accept(VisitorBase& visitor);
 };
 
 class VisitorBase {
-  virtual void visitBinaryExpr(Binary expr) = 0;
-  virtual void visitGroupingExpr(Grouping expr) = 0;
-  virtual void visitLiteralExpr(Literal expr) = 0;
-  virtual void visitUnaryExpr(Unary expr) = 0;
+  virtual void visitBinaryExpr(Binary expr);
+  virtual void visitGroupingExpr(Grouping expr);
+  virtual void visitLiteralExpr(Literal expr);
+  virtual void visitUnaryExpr(Unary expr);
 };
 
 template <typename R>
