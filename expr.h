@@ -22,7 +22,7 @@ struct Binary : Expr {
   Binary(Expr& _left, Token& _op, Expr& _right) : left(_left), op(_op), right(_right) {}
 
   protected:
-    virtual void do_accept(VisitorBase& visitor);
+    virtual void do_accept(VisitorBase& visitor) override;
 };
 
 struct Grouping : Expr {
@@ -31,7 +31,7 @@ struct Grouping : Expr {
   Grouping(Expr& _expression) : expression(_expression) {}
 
   protected:
-    virtual void do_accept(VisitorBase& visitor);
+    virtual void do_accept(VisitorBase& visitor) override;
 };
 
 struct Literal : Expr {
@@ -40,7 +40,7 @@ struct Literal : Expr {
   Literal(literal_t _value) : value(_value) {}
 
   protected:
-    virtual void do_accept(VisitorBase& visitor);
+    virtual void do_accept(VisitorBase& visitor) override;
 };
 
 struct Unary : Expr {
@@ -50,17 +50,21 @@ struct Unary : Expr {
   Unary(Token& _op, Expr& _right) : op(_op), right(_right) {}
 
   protected:
-    virtual void do_accept(VisitorBase& visitor);
+    virtual void do_accept(VisitorBase& visitor) override;
 };
 
 class VisitorBase {
-  virtual void visitBinaryExpr(Binary expr);
-  virtual void visitGroupingExpr(Grouping expr);
-  virtual void visitLiteralExpr(Literal expr);
-  virtual void visitUnaryExpr(Unary expr);
+  public:
+    virtual void visitBinaryExpr(Binary& expr) = 0;
+    virtual void visitGroupingExpr(Grouping& expr) = 0;
+    virtual void visitLiteralExpr(Literal& expr) = 0;
+    virtual void visitUnaryExpr(Unary& expr) = 0;
 };
 
 template <typename R>
 class Visitor : VisitorBase {
-  R result();
+  R result;
+
+  public:
+    R get_result();
 };
